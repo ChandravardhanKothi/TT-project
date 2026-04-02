@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Accounts - MarketAI Suite</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body th:attr="data-load-analytics=${socialAccounts != null and socialAccounts.anyConnected()}">
+    <div class="sidebar">
+        <div class="sidebar-logo">MarketAI</div>
+        <ul class="sidebar-nav">
+            <li><a th:href="@{/dashboard}">Dashboard</a></li>
+            <li><a th:href="@{/generator}">AI Generator</a></li>
+            <li><a th:href="@{/chatbot}">Chatbot</a></li>
+            <li><a th:href="@{/social}" class="active">Social Accounts</a></li>
+            <li><a th:href="@{/logout}">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <h1>Connect Your Social Media</h1>
+            <p class="subtitle">Link your accounts to track analytics and share content</p>
+        </header>
+
+        <div class="card">
+            <h2>Connect Social Media Accounts</h2>
+            <p class="description">Enter your usernames to connect your social media accounts. We'll fetch basic analytics and enable quick sharing.</p>
+
+            <form id="social-form">
+                <div class="form-group">
+                    <label for="instagram_username">📷 Instagram Username</label>
+                    <input type="text" id="instagram_username" name="instagram_username"
+                           placeholder="e.g., yourusername"
+                           th:value="${socialAccounts != null ? socialAccounts.instagramUsername() : ''}">
+                </div>
+
+                <div class="form-group">
+                    <label for="twitter_username">🐦 X (Twitter) Username</label>
+                    <input type="text" id="twitter_username" name="twitter_username"
+                           placeholder="e.g., yourusername"
+                           th:value="${socialAccounts != null ? socialAccounts.twitterUsername() : ''}">
+                </div>
+
+                <div class="form-group">
+                    <label for="linkedin_username">💼 LinkedIn Username or Profile</label>
+                    <input type="text" id="linkedin_username" name="linkedin_username"
+                           placeholder="e.g., yourname or company-name"
+                           th:value="${socialAccounts != null ? socialAccounts.linkedinUsername() : ''}">
+                </div>
+
+                <button type="submit" class="btn-primary">Save Connections</button>
+            </form>
+        </div>
+
+        <div id="connected-accounts" style="display: none;">
+            <h2 style="margin-bottom: 20px; margin-top: 30px;">Connected Accounts</h2>
+            <div class="analytics-grid">
+                <div class="analytics-card" id="instagram-card" style="display: none;">
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <h3 style="margin: 0; margin-right: 10px;">📷 Instagram</h3>
+                        <span class="connection-status" style="background: #10b981; color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.8em;">Connected</span>
+                    </div>
+                    <div id="instagram-info">
+                        <div class="analytics-metrics">
+                            <div class="metric">
+                                <div class="metric-label">Followers</div>
+                                <div class="metric-value" id="instagram-followers">-</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Posts</div>
+                                <div class="metric-value" id="instagram-posts">-</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Growth</div>
+                                <div class="metric-value" id="instagram-growth">-</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Username</div>
+                                <div class="metric-value" id="instagram-username" style="font-size: 1em;">-</div>
+                            </div>
+                        </div>
+                        <div id="instagram-bio" style="margin-top: 15px; color: var(--text-secondary); font-size: 0.9em;"></div>
+                    </div>
+                </div>
+
+                <div class="analytics-card" id="twitter-card" style="display: none;">
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <h3 style="margin: 0; margin-right: 10px;">🐦 X (Twitter)</h3>
+                        <span class="connection-status" style="background: #10b981; color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.8em;">Connected</span>
+                    </div>
+                    <div id="twitter-info">
+                        <div class="analytics-metrics">
+                            <div class="metric">
+                                <div class="metric-label">Followers</div>
+                                <div class="metric-value" id="twitter-followers">-</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Tweets</div>
+                                <div class="metric-value" id="twitter-tweets">-</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Growth</div>
+                                <div class="metric-value" id="twitter-growth">-</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Username</div>
+                                <div class="metric-value" id="twitter-username" style="font-size: 1em;">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="analytics-card" id="linkedin-card" style="display: none;">
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <h3 style="margin: 0; margin-right: 10px;">💼 LinkedIn</h3>
+                        <span class="connection-status" style="background: #10b981; color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.8em;">Connected</span>
+                    </div>
+                    <div id="linkedin-info">
+                        <div class="analytics-metrics">
+                            <div class="metric">
+                                <div class="metric-label">Followers</div>
+                                <div class="metric-value" id="linkedin-followers">-</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Posts</div>
+                                <div class="metric-value" id="linkedin-posts">-</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Growth</div>
+                                <div class="metric-value" id="linkedin-growth">-</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Connections</div>
+                                <div class="metric-value" id="linkedin-connections">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('social-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const form = e.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+
+            submitButton.disabled = true;
+            submitButton.textContent = 'Saving...';
+
+            try {
+                const response = await fetch('/connect_social', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        instagram_username: document.getElementById('instagram_username').value,
+                        twitter_username: document.getElementById('twitter_username').value,
+                        linkedin_username: document.getElementById('linkedin_username').value
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showToast('Social accounts connected successfully!');
+                    loadSocialAnalytics();
+                } else {
+                    showToast('Error: ' + (data.error || 'Failed to connect accounts'), 'error');
+                }
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Save Connections';
+            }
+        });
+
+        async function loadSocialAnalytics() {
+            try {
+                const response = await fetch('/get_social');
+                const data = await response.json();
+
+                if (data.accounts) {
+                    document.getElementById('connected-accounts').style.display = 'block';
+
+                    if (data.analytics && data.analytics.instagram) {
+                        const insta = data.analytics.instagram;
+                        document.getElementById('instagram-card').style.display = 'block';
+                        document.getElementById('instagram-followers').textContent = formatNumber(insta.followers);
+                        document.getElementById('instagram-posts').textContent = insta.posts;
+                        document.getElementById('instagram-growth').textContent = '+' + insta.growth + '%';
+                        document.getElementById('instagram-username').textContent = '@' + insta.username;
+                        if (insta.bio) {
+                            document.getElementById('instagram-bio').textContent = insta.bio;
+                        }
+                    } else if (data.accounts.instagram_username) {
+                        document.getElementById('instagram-card').style.display = 'block';
+                        document.getElementById('instagram-username').textContent = '@' + data.accounts.instagram_username;
+                    }
+
+                    if (data.analytics && data.analytics.twitter) {
+                        const twitter = data.analytics.twitter;
+                        document.getElementById('twitter-card').style.display = 'block';
+                        document.getElementById('twitter-followers').textContent = formatNumber(twitter.followers);
+                        document.getElementById('twitter-tweets').textContent = twitter.tweets;
+                        document.getElementById('twitter-growth').textContent = '+' + twitter.growth + '%';
+                        document.getElementById('twitter-username').textContent = '@' + twitter.username;
+                    } else if (data.accounts.twitter_username) {
+                        document.getElementById('twitter-card').style.display = 'block';
+                        document.getElementById('twitter-username').textContent = '@' + data.accounts.twitter_username;
+                    }
+
+                    if (data.analytics && data.analytics.linkedin) {
+                        const linkedin = data.analytics.linkedin;
+                        document.getElementById('linkedin-card').style.display = 'block';
+                        document.getElementById('linkedin-followers').textContent = formatNumber(linkedin.followers);
+                        document.getElementById('linkedin-posts').textContent = linkedin.posts;
+                        document.getElementById('linkedin-growth').textContent = '+' + linkedin.growth + '%';
+                        document.getElementById('linkedin-connections').textContent = formatNumber(linkedin.connections);
+                    } else if (data.accounts.linkedin_username) {
+                        document.getElementById('linkedin-card').style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading analytics:', error);
+            }
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toString();
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                background: ${type === 'error' ? '#ef4444' : '#10b981'};
+                color: white;
+                border-radius: 12px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (document.body.getAttribute('data-load-analytics') === 'true') {
+                loadSocialAnalytics();
+            }
+        });
+    </script>
+
+    <style>
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+    </style>
+</body>
+</html>

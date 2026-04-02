@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Generator - MarketAI Suite</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">MarketAI</div>
+        <ul class="sidebar-nav">
+            <li><a th:href="@{/dashboard}">Dashboard</a></li>
+            <li><a th:href="@{/generator}" class="active">AI Generator</a></li>
+            <li><a th:href="@{/chatbot}">Chatbot</a></li>
+            <li><a th:href="@{/social}">Social Accounts</a></li>
+            <li><a th:href="@{/logout}">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <div class="header-content">
+                <h1>AI Generator</h1>
+                <p class="subtitle">Create campaigns, pitches, and score leads</p>
+            </div>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-button active" onclick="showTab('campaign')">Marketing Campaign</button>
+            <button class="tab-button" onclick="showTab('pitch')">Sales Pitch</button>
+            <button class="tab-button" onclick="showTab('lead')">Lead Score</button>
+        </nav>
+
+        <div id="campaign-tab" class="tab-content active">
+            <div class="card">
+                <h2>AI-Generated Marketing Campaign</h2>
+                <p class="description">Generate comprehensive marketing strategies with targeted content ideas, ad copy variations, and CTA suggestions.</p>
+
+                <form id="campaign-form">
+                    <div class="form-group">
+                        <label for="product">Product/Service *</label>
+                        <textarea id="product" name="product" rows="3" placeholder="e.g., AI-powered email marketing platform for e-commerce businesses" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="audience">Target Audience *</label>
+                        <textarea id="audience" name="audience" rows="3" placeholder="e.g., Small business owners, 25-45 years old, active on LinkedIn, interested in marketing automation" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="platform">Platform *</label>
+                        <input type="text" id="platform" name="platform" placeholder="e.g., LinkedIn, Instagram, Facebook, Google Ads" required>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Generate Campaign</button>
+                </form>
+
+                <div id="campaign-result" class="result-container" style="display: none;">
+                    <h3>Your Campaign Strategy</h3>
+                    <div id="campaign-content" class="result-content"></div>
+                    <div class="action-buttons">
+                        <button class="btn-copy" onclick="copyToClipboard('campaign-content')">Copy</button>
+                        <button class="btn-export" onclick="exportContent('campaign-content', 'campaign')">Export</button>
+                    </div>
+                    <div class="social-share-buttons" id="campaign-share-buttons" style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn-share-instagram" onclick="shareToInstagram('campaign-content')">📷 Post to Instagram</button>
+                        <button class="btn-share-twitter" onclick="shareToTwitter('campaign-content')">🐦 Post to X</button>
+                        <button class="btn-share-linkedin" onclick="shareToLinkedIn('campaign-content')">💼 Post to LinkedIn</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="pitch-tab" class="tab-content">
+            <div class="card">
+                <h2>Intelligent Sales Pitch Generator</h2>
+                <p class="description">Create personalized, compelling pitches tailored to specific customer personas and use cases.</p>
+
+                <form id="pitch-form">
+                    <div class="form-group">
+                        <label for="pitch-product">Product/Service *</label>
+                        <textarea id="pitch-product" name="product" rows="3" placeholder="e.g., Cloud-based inventory management system" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="customer">Customer Persona *</label>
+                        <textarea id="customer" name="customer" rows="3" placeholder="e.g., Operations Director, Fortune 500 retail company, scaling operations across 500 stores" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Generate Pitch</button>
+                </form>
+
+                <div id="pitch-result" class="result-container" style="display: none;">
+                    <h3>Your Sales Pitch</h3>
+                    <div id="pitch-content" class="result-content"></div>
+                    <div class="action-buttons">
+                        <button class="btn-copy" onclick="copyToClipboard('pitch-content')">Copy</button>
+                        <button class="btn-export" onclick="exportContent('pitch-content', 'pitch')">Export</button>
+                    </div>
+                    <div class="social-share-buttons" id="pitch-share-buttons" style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn-share-instagram" onclick="shareToInstagram('pitch-content')">📷 Post to Instagram</button>
+                        <button class="btn-share-twitter" onclick="shareToTwitter('pitch-content')">🐦 Post to X</button>
+                        <button class="btn-share-linkedin" onclick="shareToLinkedIn('pitch-content')">💼 Post to LinkedIn</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="lead-tab" class="tab-content">
+            <div class="card">
+                <h2>Lead Qualification & Scoring</h2>
+                <p class="description">Identify and prioritize high-value leads with AI-powered scoring (0-100 scale).</p>
+
+                <form id="lead-form">
+                    <div class="form-group">
+                        <label for="leadName">Lead Name</label>
+                        <input type="text" id="leadName" name="leadName" placeholder="e.g., Sarah Johnson">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="budget">Budget Quality *</label>
+                        <textarea id="budget" name="budget" rows="2" placeholder="e.g., $150,000 annual software budget, can approve deals up to $50,000" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="need">Business Need *</label>
+                        <textarea id="need" name="need" rows="2" placeholder="e.g., Improving customer retention by 20%, reducing churn" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="urgency">Urgency Level *</label>
+                        <textarea id="urgency" name="urgency" rows="2" placeholder="e.g., Board of directors requested solution by end of Q3, high priority" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Score Lead</button>
+                </form>
+
+                <div id="lead-result" class="result-container" style="display: none;">
+                    <h3>Lead Qualification Analysis</h3>
+                    <div id="lead-score-display" class="score-display"></div>
+                    <div id="lead-content" class="result-content"></div>
+                    <div class="action-buttons">
+                        <button class="btn-copy" onclick="copyToClipboard('lead-content')">Copy</button>
+                        <button class="btn-export" onclick="exportContent('lead-content', 'lead')">Export</button>
+                    </div>
+                    <div class="social-share-buttons" id="lead-share-buttons" style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn-share-instagram" onclick="shareToInstagram('lead-content')">📷 Post to Instagram</button>
+                        <button class="btn-share-twitter" onclick="shareToTwitter('lead-content')">🐦 Post to X</button>
+                        <button class="btn-share-linkedin" onclick="shareToLinkedIn('lead-content')">💼 Post to LinkedIn</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/script.js}"></script>
+</body>
+</html>

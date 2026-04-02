@@ -1,0 +1,17 @@
+com/marketaisuite/marketai/service/SocialAnalyticsService.class
+com/marketaisuite/marketai/repository/DatabaseService.class
+com/marketaisuite/marketai/domain/GenerationActivity.class
+com/marketaisuite/marketai/domain/SocialAccounts.class
+com/marketaisuite/marketai/MarketAiApplication.class
+com/marketaisuite/marketai/service/ChatbotService.class
+com/marketaisuite/marketai/web/AuthController.class
+com/marketaisuite/marketai/domain/ChatMessage.class
+com/marketaisuite/marketai/service/GroqService.class
+com/marketaisuite/marketai/config/WebConfig.class
+com/marketaisuite/marketai/domain/UserStats.class
+com/marketaisuite/marketai/web/ApiController.class
+com/marketaisuite/marketai/web/LoginInterceptor.class
+com/marketaisuite/marketai/domain/UserRow.class
+com/marketaisuite/marketai/service/MarkdownService.class
+com/marketaisuite/marketai/config/DatabaseInitializer.class
+com/marketaisuite/marketai/config/CorsConfig.class

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - MarketAI Suite</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">MarketAI</div>
+        <ul class="sidebar-nav">
+            <li><a th:href="@{/dashboard}" class="active">Dashboard</a></li>
+            <li><a th:href="@{/generator}">AI Generator</a></li>
+            <li><a th:href="@{/chatbot}">Chatbot</a></li>
+            <li><a th:href="@{/social}">Social Accounts</a></li>
+            <li><a th:href="@{/logout}">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <header style="margin-bottom: 30px;">
+            <h1 style="font-size: 2em; margin-bottom: 10px;">Welcome back, <span th:text="${userName}">User</span>!</h1>
+            <p class="subtitle">Here's your marketing overview</p>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Generations</h3>
+                <div class="stat-value" th:text="${stats.totalGenerations()}">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Campaigns Created</h3>
+                <div class="stat-value" th:text="${stats.campaigns()}">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Pitches Generated</h3>
+                <div class="stat-value" th:text="${stats.pitches()}">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Leads Scored</h3>
+                <div class="stat-value" th:text="${stats.leads()}">0</div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 30px;"
+             th:if="${socialAccounts == null or !socialAccounts.anyConnected()}">
+            <h2 style="margin-bottom: 20px;">Connect Your Social Media Accounts</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">No social accounts connected yet. Add your usernames to load analytics.</p>
+
+            <form id="dashboard-social-form">
+                <div class="form-group">
+                    <label for="dashboard-instagram">📷 Instagram Username</label>
+                    <input type="text" id="dashboard-instagram" name="instagram_username"
+                           placeholder="e.g., yourusername"
+                           th:value="${socialAccounts != null ? socialAccounts.instagramUsername() : ''}">
+                </div>
+
+                <div class="form-group">
+                    <label for="dashboard-twitter">🐦 X (Twitter) Username</label>
+                    <input type="text" id="dashboard-twitter" name="twitter_username"
+                           placeholder="e.g., yourusername"
+                           th:value="${socialAccounts != null ? socialAccounts.twitterUsername() : ''}">
+                </div>
+
+                <div class="form-group">
+                    <label for="dashboard-linkedin">💼 LinkedIn Username or Profile</label>
+                    <input type="text" id="dashboard-linkedin" name="linkedin_username"
+                           placeholder="e.g., yourname or company-name"
+                           th:value="${socialAccounts != null ? socialAccounts.linkedinUsername() : ''}">
+                </div>
+
+                <button type="submit" class="btn-primary">Save Connections</button>
+            </form>
+        </div>
+
+        <th:block th:if="${socialAccounts != null and socialAccounts.anyConnected()}">
+            <h2 style="margin-bottom: 20px; font-size: 1.8em;">Social Media Analytics</h2>
+            <div class="analytics-grid" id="social-analytics-grid"></div>
+        </th:block>
+
+        <div class="quick-actions">
+            <a th:href="@{/generator}" class="btn-primary" style="width: auto; padding: 12px 24px; text-decoration: none; display: inline-block;">Generate Campaign</a>
+            <a th:href="@{/generator}" class="btn-primary" style="width: auto; padding: 12px 24px; text-decoration: none; display: inline-block;">Generate Pitch</a>
+            <a th:href="@{/generator}" class="btn-primary" style="width: auto; padding: 12px 24px; text-decoration: none; display: inline-block;">Score Lead</a>
+            <a th:href="@{/chatbot}" class="btn-primary" style="width: auto; padding: 12px 24px; text-decoration: none; display: inline-block;">Ask Chatbot</a>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px;">
+            <div class="activity-list">
+                <h2 style="margin-bottom: 20px;">Recent Generations</h2>
+                <div th:if="${stats.recentActivity() != null and !stats.recentActivity().isEmpty()}">
+                    <div class="activity-item" th:each="activity : ${stats.recentActivity().subList(0, T(java.lang.Math).min(5, stats.recentActivity().size()))}">
+                        <div>
+                            <span class="activity-type" th:text="${#strings.capitalize(activity.type())}">Type</span>
+                            <div class="activity-date" th:text="${activity.createdAt()}">Date</div>
+                        </div>
+                    </div>
+                </div>
+                <p th:if="${stats.recentActivity() == null or stats.recentActivity().isEmpty()}"
+                   style="color: var(--text-secondary); text-align: center; padding: 20px;">No recent activity</p>
+            </div>
+
+            <div class="activity-list">
+                <h2 style="margin-bottom: 20px;">Recent Chats</h2>
+                <div th:if="${recentChats != null and !recentChats.isEmpty()}">
+                    <div class="activity-item" th:each="chat : ${recentChats.subList(0, T(java.lang.Math).min(5, recentChats.size()))}">
+                        <div>
+                            <span class="activity-type"
+                                  th:style="${chat.role() == 'user'} ? 'color: var(--accent-blue);' : 'color: var(--accent-purple);'"
+                                  th:text="${#strings.capitalize(chat.role())}">Role</span>
+                            <div class="activity-date" style="font-size: 0.85em; margin-top: 5px; color: var(--text-primary);"
+                                 th:with="m=${chat.message()}"
+                                 th:text="${m.length() > 50 ? m.substring(0, 50) + '...' : m}">Preview</div>
+                            <div class="activity-date" th:text="${chat.timestamp()}">Time</div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 15px;">
+                        <a th:href="@{/chatbot}" style="color: var(--accent-purple); text-decoration: none;">View All Chats →</a>
+                    </div>
+                </div>
+                <th:block th:if="${recentChats == null or recentChats.isEmpty()}">
+                    <p style="color: var(--text-secondary); text-align: center; padding: 20px;">No recent chats</p>
+                    <div style="text-align: center;">
+                        <a th:href="@{/chatbot}" style="color: var(--accent-purple); text-decoration: none;">Start Chatting →</a>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/dashboard.js}"></script>
+</body>
+</html>
