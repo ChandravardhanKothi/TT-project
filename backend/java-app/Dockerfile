@@ -1,15 +1,16 @@
-# Use official Java image
 FROM eclipse-temurin:17-jdk
 
-# Set working directory
 WORKDIR /app
 
-# Copy project files
+# Install Maven (Render Docker deploy)
+RUN apt-get update && apt-get install -y maven
+
+# Copy all project files
 COPY . .
 
-# Build the app
-RUN chmod +x mvnw || true
-RUN ./mvnw clean package -DskipTests || mvn clean package -DskipTests
+# Build the project
+RUN mvn clean package -DskipTests
 
-# Run the app
-CMD ["java", "-jar", "target/*.jar"]
+# Run the Spring Boot app
+# NOTE: Exec-form CMD does not expand wildcards; use the concrete jar name.
+CMD ["java", "-jar", "target/marketai-suite-1.0.0-SNAPSHOT.jar"]
